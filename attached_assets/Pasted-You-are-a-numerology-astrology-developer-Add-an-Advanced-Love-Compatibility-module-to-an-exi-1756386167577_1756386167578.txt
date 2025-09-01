@@ -1,0 +1,81 @@
+You are a numerology + astrology developer. 
+Add an **Advanced Love Compatibility module** to an existing numerology app in JavaScript. 
+Do not change existing Life Path, Expression, Soul Urge, Personality, Birthday, and Maturity number calculations.
+
+## Compatibility Features to Implement
+
+### 1. Life Path Compatibility
+- Formula: score_lp = 1 - abs(lp1 - lp2) / 8
+- If both have identical Life Path → add +0.1 bonus.
+- Provide explanation: harmony traits + possible conflicts.
+
+### 2. Expression (Destiny) Compatibility
+- Formula: score_expr = 1 - abs(expr1 - expr2) / 8
+- If both identical → add +0.1 bonus.
+- Insight: how they align in career, goals, material life.
+
+### 3. Soul Urge Compatibility
+- Formula: score_soul = 1 - abs(soul1 - soul2) / 8
+- Insight: emotional/romantic alignment, shared values.
+
+### 4. Personality Compatibility
+- Formula: score_person = 1 - abs(per1 - per2) / 8
+- Insight: first impressions, social image, lifestyle balance.
+
+### 5. Birthday Compatibility
+- Formula: score_bday = 1 - abs(bday1 - bday2) / 8
+- Insight: daily habits and surface-level harmony.
+
+### 6. Hidden Passion Compatibility
+- Most frequent digit in each partner’s name.
+- If same digit → score_hidden = 1
+- Else → score_hidden = 1 - abs(d1 - d2) / 8
+- Insight: deep drives and shared inner desires.
+
+### 7. Lo-Shu Grid Compatibility
+- Build Lo-Shu Grid for each DOB (ignore 0).
+- Compare filled vs missing digits.
+- score_lo = (matching_digits / 9) + (0.05 if one fills other’s missing number).
+- Insight: where they complete or challenge each other.
+
+### 8. Pinnacle & Challenge Synergy
+- Compare Pinnacle numbers stage by stage.
+  - If match → +0.1 bonus synergy.
+- Compare Challenge numbers.
+  - If same challenge → caution note and -0.05 adjustment.
+- Insight: long-term growth & struggles.
+
+### 9. Final Compatibility Score
+- Weighted sum:
+  score = (0.25*score_lp + 0.15*score_expr + 0.15*score_soul + 
+           0.15*score_person + 0.1*score_bday + 
+           0.1*score_hidden + 0.05*score_lo + 0.05*pinnacle_bonus - challenge_penalty)
+- Express as % (0–100).
+- Categorize:
+  - 80–100 = Excellent Match ❤️
+  - 65–79 = Good Match 💕
+  - 50–64 = Average Match 🤝
+  - Below 50 = Challenging ⚠️
+
+### 10. Output Format
+Return JSON:
+{
+  score: 85,
+  category: "Excellent Match ❤️",
+  summary: "Strong emotional bond with shared values, but may need balance in career priorities.",
+  details: {
+    lifePath: "...",
+    expression: "...",
+    soulUrge: "...",
+    personality: "...",
+    birthday: "...",
+    hiddenPassion: "...",
+    loShu: "...",
+    pinnacles: "..."
+  }
+}
+
+### Style
+- Keep insights warm, friendly, Hinglish (Hindi + English mix).
+- Max 70 words per section.
+- Focus on love, marriage, family, money – common Indian concerns.

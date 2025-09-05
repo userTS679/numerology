@@ -1,12 +1,58 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import { storage } from "./storage";
+import userRoutes from './routes/user-routes';
+import vedicRoutes from './routes/vedic-routes';
+import paymentRoutes from './routes/payment-routes';
+import authRoutes from './routes/auth-routes';
 import { calculateNumerology, calculateCompatibilityScore, calculateAdvancedCompatibility, type AdvancedCompatibilityResult } from "./services/numerology";
 import { generateNumerologyInsight, generateCompatibilityInsight, chatWithNumenCoach } from "./services/groq";
 import { insertNumerologyReadingSchema, insertCompatibilityAnalysisSchema, insertChatSessionSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Security middleware
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        scriptSrc: ["'self'"],
+      },
+    },
+  }));
+  
+  app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://numencoach.com', 'https://www.numencoach.com']
+      : ['http://localhost:5000', 'http://localhost:3000'],
+    credentials: true,
+  }));
+  
+  app.use(compression());
+  app.use(morgan('combined'));
+  
+  // Rate limiting
+  const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per window
+    message: { message: 'Too many requests, please try again later' },
+  });
+  app.use('/api', generalLimiter);
+  
+  // Register route modules
+  app.use('/api/users', userRoutes);
+  app.use('/api/vedic', vedicRoutes);
+  app.use('/api/payment', paymentRoutes);
+  app.use('/api/auth', authRoutes);
   
   // Calculate numerology reading
   app.post("/api/numerology/calculate", async (req, res) => {

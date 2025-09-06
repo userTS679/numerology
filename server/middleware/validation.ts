@@ -2,6 +2,84 @@ import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
 /**
+ * Validate chart computation request
+ */
+export const validateChartCompute = [
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .matches(/^[a-zA-Z\s\u0900-\u097F]+$/)
+    .withMessage('Name must be 2-100 characters, letters only'),
+  
+  body('dob')
+    .isISO8601()
+    .custom((value) => {
+      const birthDate = new Date(value);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      if (age < 1 || age > 120) {
+        throw new Error('Age must be between 1 and 120 years');
+      }
+      return true;
+    }),
+  
+  body('tob')
+    .optional()
+    .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .withMessage('Time must be in HH:MM format'),
+  
+  body('place')
+    .trim()
+    .isLength({ min: 2, max: 200 })
+    .withMessage('Place of birth is required'),
+  
+  body('lat')
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be between -90 and 90'),
+  
+  body('lon')
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be between -180 and 180'),
+  
+  body('consent')
+    .isBoolean()
+    .custom((value) => {
+      if (!value) {
+        throw new Error('Data consent is required');
+      }
+      return true;
+    }),
+  
+  handleValidationErrors
+];
+
+/**
+ * Validate payment intent creation
+ */
+export const validatePaymentIntent = [
+  body('reportType')
+    .isIn(['detailed', 'compatibility', 'remedies'])
+    .withMessage('Invalid report type'),
+  
+  body('paymentMethod')
+    .isIn(['stripe', 'paytm', 'upi'])
+    .withMessage('Invalid payment method'),
+  
+  body('amount')
+    .isInt({ min: 1000, max: 100000 }) // ₹10 to ₹1000 in paise
+    .withMessage('Amount must be between ₹10 and ₹1000'),
+  
+  body('currency')
+    .optional()
+    .isIn(['inr', 'usd'])
+    .withMessage('Currency must be INR or USD'),
+  
+  handleValidationErrors
+];
+
+/**
  * Handle validation errors
  */
 export function handleValidationErrors(req: Request, res: Response, next: NextFunction) {

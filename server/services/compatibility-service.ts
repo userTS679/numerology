@@ -1,5 +1,5 @@
-import { db } from '../config/database';
-import { compatibilityAnalysis, kundliCharts, userProfiles } from '@shared/production-schema';
+import { db } from '../db';
+import { compatibilityAnalysis } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { calculateAdvancedCompatibility } from './numerology';
 import { generateCompatibilityInsight } from './groq';

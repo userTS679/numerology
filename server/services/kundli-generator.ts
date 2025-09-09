@@ -1,8 +1,7 @@
 import { computeNatalChart, computeVargas, computeVimshottariDasa, validateBirthData } from './ephemeris';
 import { generateVedicInterpretation } from './interpretation';
 import { generateKundliInsight } from './llm-service';
-import { db } from '../config/database';
-import { kundliCharts, astroReadings } from '@shared/production-schema';
+import { db } from '../db';
 import { logAuditEvent } from './auth-service';
 
 export interface KundliGenerationRequest {

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { db } from '../config/database';
-import { users, userProfiles, auditLogs } from '@shared/production-schema';
+import { db } from '../db';
+import { users } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { encryptPII, decryptPII } from './security';
 

@@ -1,5 +1,5 @@
-import { db } from '../config/database';
-import { chatSessions, users } from '@shared/production-schema';
+import { db } from '../db';
+import { chatSessions, users } from '@shared/schema';
 import { eq, desc } from 'drizzle-orm';
 import { chatWithNumenCoach } from './groq';
 import { logAuditEvent } from './auth-service';
